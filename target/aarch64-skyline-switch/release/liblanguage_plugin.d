@@ -1,0 +1,1 @@
+C:\Jeux\Fire_Emblem_Engage\Modding\plugins\test\target\aarch64-skyline-switch\release\liblanguage_plugin.so: C:\Jeux\Fire_Emblem_Engage\Modding\plugins\test\src\interface.rs C:\Jeux\Fire_Emblem_Engage\Modding\plugins\test\src\language.rs C:\Jeux\Fire_Emblem_Engage\Modding\plugins\test\src\lib.rs

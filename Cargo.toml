@@ -1,0 +1,25 @@
+[package]
+name = "language_plugin"
+version = "0.1.0"
+authors = []
+edition = "2021"
+
+[package.metadata.skyline]
+titleid = "0100a6301214e000" # Fire Emblem Engage
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+cobapi = { git = "https://github.com/DivineDragonFanClub/cobapi.git", version = "0.3.0" }
+engage = { git = "https://github.com/DivineDragonFanClub/engage.git", version = "0.6.3" }
+skyline = "0.2.0"
+unity = { git = "https://github.com/DivineDragonFanClub/unity.git", version = "0.3.0" }
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+opt-level = 1
+panic = "abort"
+lto = true
