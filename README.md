@@ -1,0 +1,1 @@
+Cobalt plugin for FE Engage that allows you to change the language and voices during game.
