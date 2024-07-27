@@ -1,8 +1,11 @@
-use unity::prelude::*;
-use engage::menu::{config::{ConfigBasicMenuItem, ConfigBasicMenuItemSwitchMethods}, BasicMenuResult};
+use engage::proc::ProcInst;
+use engage::menu::{BasicMenuResult};
+use engage::dialog::yesno::{BasicDialogItemYes, YesNoDialog, TwoChoiceDialogMethods};
+use engage::menu::config::{ConfigBasicMenuItem, ConfigBasicMenuItemSwitchMethods};
+use unity::prelude::{MethodInfo, OptionalMethod};
 use crate::interface::{get_current_language, set_language, reflect_language_setting, reload_messages};
 
-static mut PREVIEW_LANG: i32 = 1; // Default to English
+static mut PREVIEW_LANG: i32 = 1;
 
 fn get_language_name(lang_id: i32) -> &'static str {
     match lang_id {
@@ -22,6 +25,16 @@ fn get_language_name(lang_id: i32) -> &'static str {
 
 fn get_localized_string(key: &str, lang_id: i32) -> &'static str {
     match (key, lang_id) {
+        ("change_language_confirm", 0) => "changerlangue ?",
+        ("change_language_confirm", 1) => "changerlangue ?",
+        ("change_language_confirm", 4) => "changerlangue ?",
+        ("change_language_confirm", 5) => "changerlangue ?",
+        ("change_language_confirm", 6) => "changerlangue ?",
+        ("change_language_confirm", 7) => "changerlangue ?",
+        ("change_language_confirm", 8) => "changerlangue ?",
+        ("change_language_confirm", 9) => "changerlangue ?",
+        ("change_language_confirm", 10) => "changerlangue ?",
+        ("change_language_confirm", 11) => "changerlangue ?",
         ("change_language", 0) => "言語を変更",
         ("change_language", 1) => "Change Language",
         ("change_language", 4) => "Change Language",
@@ -51,7 +64,7 @@ pub struct LanguageSettings;
 impl ConfigBasicMenuItemSwitchMethods for LanguageSettings {
     fn init_content(this: &mut ConfigBasicMenuItem) {
         unsafe {
-            PREVIEW_LANG = get_current_language(); // Initialize with current language
+            PREVIEW_LANG = get_current_language();
             update_texts(this);
         }
     }
@@ -87,12 +100,28 @@ impl ConfigBasicMenuItemSwitchMethods for LanguageSettings {
 
 extern "C" fn a_button_confirm(this: &mut ConfigBasicMenuItem, _method_info: Option<&'static MethodInfo>) -> BasicMenuResult {
     unsafe {
-        set_language(PREVIEW_LANG);
-        reflect_language_setting();
-        reload_messages();
-        update_texts(this);
-        BasicMenuResult::se_cursor()
+        YesNoDialog::bind::<LanguageConfirmation>(
+            this.menu,  
+            get_localized_string("change_language_confirm", PREVIEW_LANG),
+            "Yes",
+            "No" 
+        );
     }
+    BasicMenuResult::se_cursor()
+}
+
+struct LanguageConfirmation;
+
+impl TwoChoiceDialogMethods for LanguageConfirmation {
+    extern "C" fn on_first_choice(_this: &mut BasicDialogItemYes, _method_info: OptionalMethod) -> BasicMenuResult {
+        unsafe {
+            set_language(PREVIEW_LANG);
+            reflect_language_setting();
+            reload_messages();
+        }
+        BasicMenuResult::new().with_close_this(true)
+    }
+
 }
 
 fn update_texts(this: &mut ConfigBasicMenuItem) {
