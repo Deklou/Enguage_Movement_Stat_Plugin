@@ -1,4 +1,3 @@
-use engage::proc::ProcInst;
 use engage::menu::{BasicMenuResult};
 use engage::dialog::yesno::{BasicDialogItemYes, YesNoDialog, TwoChoiceDialogMethods};
 use engage::menu::config::{ConfigBasicMenuItem, ConfigBasicMenuItemSwitchMethods};
