@@ -6,6 +6,7 @@ use crate::interface::{get_current_language, set_language, reflect_language_sett
 static mut PREVIEW_LANG: i32 = 1;
 static mut CURRENT_LANG: i32 = 1;
 
+//get the language translations for each language ID
 fn get_language_translations() -> HashMap<i32, Vec<&'static str>> {
     let mut translations = HashMap::new();
     translations.insert(0, vec!["日本語", "Japanese","" , "Japonés", "Japanese", "Japonais", "Japonés", "Japanisch", "Giapponese", "日本語", "日语", "일본어"]);
@@ -22,24 +23,26 @@ fn get_language_translations() -> HashMap<i32, Vec<&'static str>> {
     translations
 }
 
+//get the name of a language based on the selected language ID and current language ID
 fn get_language_name(lang_id: i32, current_lang_id: i32) -> &'static str {
     let translations = get_language_translations();
     translations.get(&lang_id).and_then(|names| names.get(current_lang_id as usize)).unwrap_or(&"Unknown")
 }
 
+//get the localized string for different keys
 fn get_localized_string(key: &str, lang_id: i32) -> &'static str {
     match (key, lang_id) {
-        ("change_language_confirm", 0) => "changerlangue ?",
-        ("change_language_confirm", 1) => "changerlangue ?",
-        ("change_language_confirm", 3) => "changerlangue ?",
-        ("change_language_confirm", 4) => "changerlangue ?",
-        ("change_language_confirm", 5) => "changerlangue ?",
-        ("change_language_confirm", 6) => "changerlangue ?",
-        ("change_language_confirm", 7) => "changerlangue ?",
-        ("change_language_confirm", 8) => "changerlangue ?",
-        ("change_language_confirm", 9) => "changerlangue ?",
-        ("change_language_confirm", 10) => "changerlangue ?",
-        ("change_language_confirm", 11) => "changerlangue ?",
+        ("change_language_confirm", 0) => "言語を変えてください ？",
+        ("change_language_confirm", 1) => "Change language ?",
+        ("change_language_confirm", 3) => "¿Chambiar idioma?",
+        ("change_language_confirm", 4) => "Change language ?",
+        ("change_language_confirm", 5) => "Changer de langue ?",
+        ("change_language_confirm", 6) => "¿Chambiar idioma?",
+        ("change_language_confirm", 7) => "Sprache ändern?",
+        ("change_language_confirm", 8) => "Vuoi cambiare la lingua ?",
+        ("change_language_confirm", 9) => "改變語言 ？",
+        ("change_language_confirm", 10) => "改变语言 ？",
+        ("change_language_confirm", 11) => "언어를 바꾸시겠어요?",
         ("change_language", 0) => "言語を変更",
         ("change_language", 1) => "Change Language",
         ("change_language", 3) => "Cambiar idioma",
@@ -68,7 +71,9 @@ fn get_localized_string(key: &str, lang_id: i32) -> &'static str {
 
 pub struct LanguageSettings;
 
+//implementing the trait for menu switch methods
 impl ConfigBasicMenuItemSwitchMethods for LanguageSettings {
+    //initialize the content of the menu
     fn init_content(this: &mut ConfigBasicMenuItem) {
         unsafe {
             CURRENT_LANG = get_current_language();
@@ -77,6 +82,7 @@ impl ConfigBasicMenuItemSwitchMethods for LanguageSettings {
         }
     }
 
+    //changing the language preview
     extern "C" fn custom_call(this: &mut ConfigBasicMenuItem, _method_info: Option<&'static MethodInfo>) -> BasicMenuResult {
         unsafe {
             let new_lang = ConfigBasicMenuItem::change_key_value_i(PREVIEW_LANG, 0, 11, 1);
@@ -90,6 +96,7 @@ impl ConfigBasicMenuItemSwitchMethods for LanguageSettings {
         }
     }
 
+    //set help text
     extern "C" fn set_help_text(this: &mut ConfigBasicMenuItem, _method_info: Option<&'static MethodInfo>) {
         unsafe {
             let help_text = get_localized_string("current_language", CURRENT_LANG);
@@ -98,14 +105,17 @@ impl ConfigBasicMenuItemSwitchMethods for LanguageSettings {
         }
     }
 
+    //set command text
     extern "C" fn set_command_text(this: &mut ConfigBasicMenuItem, _method_info: Option<&'static MethodInfo>) {
         unsafe {
             let command_text = get_language_name(CURRENT_LANG, CURRENT_LANG);
-            this.command_text = format!("{}", command_text).into();
+            this.command_text = command_text.to_string().into();
         }
     }
 }
 
+
+//confirm the language change when the A button is pressed
 extern "C" fn a_button_confirm(this: &mut ConfigBasicMenuItem, _method_info: Option<&'static MethodInfo>) -> BasicMenuResult {
     unsafe {
         if PREVIEW_LANG != CURRENT_LANG {
@@ -119,14 +129,16 @@ extern "C" fn a_button_confirm(this: &mut ConfigBasicMenuItem, _method_info: Opt
     }
 }
 
+//update the preview text based on the selected language
 fn update_preview_text(this: &mut ConfigBasicMenuItem) {
     unsafe {
         let lang_name = get_language_name(PREVIEW_LANG, CURRENT_LANG);
-        this.command_text = format!("{}", lang_name).into();
+        this.command_text = lang_name.to_string().into();
         this.update_text();
     }
 }
 
+//update this plugin texts to reflect the current language
 fn update_texts(this: &mut ConfigBasicMenuItem) {
     unsafe {
         this.title_text = get_localized_string("change_language", CURRENT_LANG).into();
@@ -136,14 +148,19 @@ fn update_texts(this: &mut ConfigBasicMenuItem) {
     }
 }
 
+//callback function for language selection
 #[no_mangle]
 extern "C" fn language_callback() -> &'static mut ConfigBasicMenuItem {
     let switch = ConfigBasicMenuItem::new_switch::<LanguageSettings>("Change Language");
-    switch.get_class_mut().get_virtual_method_mut("ACall").map(|method| method.method_ptr = a_button_confirm as _);
+    if let Some(method) = switch.get_class_mut().get_virtual_method_mut("ACall") {
+        method.method_ptr = a_button_confirm as _;
+    }
+    
     update_texts(switch);
     switch
 }
 
+//function to install the language setting in the game
 pub fn language_install() {
     cobapi::install_game_setting(language_callback);
 }
