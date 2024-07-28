@@ -5,6 +5,7 @@ mod interface;
 
 #[skyline::main(name = "language_plugin")]
 pub fn main() {
+     //set a panic hook to handle unexpected errors in a controlled manner
     std::panic::set_hook(Box::new(|info| {
         let location = info.location().unwrap();
 
