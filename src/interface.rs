@@ -18,5 +18,3 @@ pub fn reflect_voice_setting();
 
 #[unity::from_offset("App", "Mess", "Reload")]
 pub fn reload_messages();
-
-

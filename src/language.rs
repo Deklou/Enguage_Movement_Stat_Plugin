@@ -3,8 +3,8 @@ use unity::prelude::*;
 use engage::menu::{config::{ConfigBasicMenuItem, ConfigBasicMenuItemSwitchMethods}, BasicMenuResult};
 use crate::interface::{get_current_language, set_language, reflect_language_setting, reload_messages};
 
-static mut PREVIEW_LANG: i32 = 1;
-static mut CURRENT_LANG: i32 = 1;
+pub static mut PREVIEW_LANG: i32 = 1;
+pub static mut CURRENT_LANG: i32 = 1;
 
 //get the language translations for each language ID
 fn get_language_translations() -> HashMap<i32, Vec<&'static str>> {
@@ -67,6 +67,11 @@ fn get_localized_string(key: &str, lang_id: i32) -> &'static str {
         ("current_language", 11) => "현재 언어",
         _ => "Unspecified",
     }
+}
+
+#[allow(dead_code)]
+pub fn get_current_lang() -> i32 {
+    unsafe { CURRENT_LANG }
 }
 
 pub struct LanguageSettings;
