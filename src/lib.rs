@@ -2,6 +2,7 @@
 
 mod language;
 mod interface;
+mod voice;
 
 #[skyline::main(name = "language_plugin")]
 pub fn main() {
@@ -31,4 +32,5 @@ pub fn main() {
     }));
 
     language::language_install();
+    voice::voice_install();
 }
