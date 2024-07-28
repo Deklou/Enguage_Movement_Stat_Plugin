@@ -8,17 +8,17 @@ static mut CURRENT_LANG: i32 = 1;
 
 fn get_language_translations() -> HashMap<i32, Vec<&'static str>> {
     let mut translations = HashMap::new();
-    translations.insert(0, vec!["日本語",  "Japanese", "", "", "Japanese", "Japonais", "Japonés", "Japanisch", "Giapponese", "日本語", "日语", "일본어"]);
-    translations.insert(1, vec!["日本語で", "English", "", "", "English", "Anglais", "Inglés", "Englisch", "Inglese", "英语", "英语", "영어"]);
-    translations.insert(3, vec!["スペイン語", "Spanish", "", "", "Spanish", "Espagnol", "Español", "Spanisch", "Spagnolo", "西班牙语", "西班牙语", "스페인어"]);
-    translations.insert(4, vec!["英語で", "English", "", "", "English", "Anglais", "Inglés", "Englisch", "Inglese", "英文", "英文", "영어"]);
-    translations.insert(5, vec!["フランス語", "French", "", "", "French", "Français", "Francés", "Französisch", "Francese", "法语", "法语", "프랑스어"]);
-    translations.insert(6, vec!["スペイン語", "Spanish", "", "", "Spanish", "Espagnol", "Español", "Spanisch", "Spagnolo", "西班牙语", "西班牙语", "스페인어"]);
-    translations.insert(7, vec!["ドイツ語", "German", "", "", "German", "Allemand", "Alemán", "Deutsch", "Tedesco", "德语", "德语", "독일어"]);
-    translations.insert(8, vec!["イタリア語", "Italian", "", "", "Italian", "Italien", "Italiano", "Italienisch", "Italiano", "意大利语", "意大利语", "이탈리아어"]);
-    translations.insert(9, vec!["中国語 (繁体)", "Traditional Chinese", "", "", "Traditional Chinese", "Chinois Traditionnel", "Chino Tradicional", "Traditionelles Chinesisch", "Cinese Tradizionale", "传统中文", "传统中文", "중국어 (번체)"]);
-    translations.insert(10, vec!["中国語 (簡体)", "Simplified Chinese", "", "", "Simplified Chinese", "Chinois Simplifié", "Chino Simplificado", "Vereinfachtes Chinesisch", "Cinese Semplificato", "简体中文", "简体中文", "중국어 (간체)"]);
-    translations.insert(11, vec!["韓国語", "Korean", "", "", "Korean", "Coréen", "Coreano", "Koreanisch", "Coreano", "韩语", "韩语", "한국어"]);
+    translations.insert(0, vec!["日本語", "Japanese","" , "Japonés", "Japanese", "Japonais", "Japonés", "Japanisch", "Giapponese", "日本語", "日语", "일본어"]);
+    translations.insert(1, vec!["日本語で", "English (North America)","" , "Inglés (Nortoamérica)", "English (North America)","Anglais (Amérique du Nord)", "English (North America)", "Englisch (Nordamerika)", "Inglese (Nord America)", "英语", "英语", "영어"]);
+    translations.insert(3, vec!["スペイン語", "Spanish (Latin America)","" , "Español (Latinoamérica)", "Spanish (Latin America)", "Espagnol (Amérique Latine)", "Español (Latinoamérica)", "Spanisch (Lateinamerika)", "Spagnolo (America Latina)", "西班牙语", "西班牙语", "스페인어"]);
+    translations.insert(4, vec!["英語で", "English (Europe)","" , "Inglés (Europa)", "English (Europe)", "Anglais (Europe)", "Inglés (Europa)", "Englisch (Europa)", "Inglese (Europa)", "英文", "英文", "영어"]);
+    translations.insert(5, vec!["フランス語", "French (Europe)","" , "Francés (Europa)", "French (Europe)", "Français (Europe)", "Francés (Europa)", "Französisch (Europa)", "Francese (Europa)", "法语", "法语", "프랑스어"]);
+    translations.insert(6, vec!["スペイン語", "Spanish (Europe)","" , "Español (Europa)", "Spanish (Europe)", "Espagnol (Europe)", "Español (Europa)", "Spanisch (Europa)", "Spagnolo (Europa)", "西班牙语", "西班牙语", "스페인어"]);
+    translations.insert(7, vec!["ドイツ語", "German","" , "Alemán", "German", "Allemand", "Alemán", "Deutsch", "Tedesco", "德语", "德语", "독일어"]);
+    translations.insert(8, vec!["イタリア語", "Italian","" , "Italiano", "Italian", "Italien", "Italiano", "Italienisch", "Italiano", "意大利语", "意大利语", "이탈리아어"]);
+    translations.insert(9, vec!["中国語 (繁体)", "Traditional Chinese","" , "Chino Tradicional", "Traditional Chinese", "Chinois traditionnel", "Chino Tradicional", "Chinesisch (Langzeichen)", "Cinese tradizionale", "传统中文", "传统中文", "중국어 (번체)"]);
+    translations.insert(10, vec!["中国語 (簡体)", "Simplified Chinese","" , "Chino Simplificado", "Simplified Chinese", "Chinois simplifié", "Chino Simplificado", "Chinesisch (Kurzzeichen)", "Cinese semplificato", "简体中文", "简体中文", "중국어 (간체)"]);
+    translations.insert(10, vec!["韓国語", "Korean","" , "Coreano", "Korean", "Coréen", "Coreano", "Koreanisch", "Coreano", "韩语", "韩语", "한국어"]);
     translations
 }
 
@@ -110,9 +110,9 @@ extern "C" fn a_button_confirm(this: &mut ConfigBasicMenuItem, _method_info: Opt
     unsafe {
         if PREVIEW_LANG != CURRENT_LANG {
             set_language(PREVIEW_LANG);
+            CURRENT_LANG = PREVIEW_LANG;
             reflect_language_setting();
             reload_messages();
-            CURRENT_LANG = PREVIEW_LANG;
             update_texts(this);
         }
         BasicMenuResult::se_cursor()
@@ -135,7 +135,6 @@ fn update_texts(this: &mut ConfigBasicMenuItem) {
         this.update_text();
     }
 }
-
 
 #[no_mangle]
 extern "C" fn language_callback() -> &'static mut ConfigBasicMenuItem {
