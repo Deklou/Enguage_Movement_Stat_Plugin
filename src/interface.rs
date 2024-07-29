@@ -1,3 +1,5 @@
+use engage::menu::BasicMenu;
+
 #[unity::from_offset("App", "Language", "GetLang")]
 pub fn get_current_language() -> i32;
 
@@ -18,3 +20,6 @@ pub fn reflect_voice_setting();
 
 #[unity::from_offset("App", "Mess", "Reload")]
 pub fn reload_messages();
+
+#[skyline::from_offset(0x245E840)]
+pub fn rebuild_instant<T>(menu: &mut BasicMenu<T>, is_keep_item_index: bool);

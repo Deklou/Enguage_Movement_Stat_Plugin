@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 use unity::prelude::*;
-use engage::menu::{config::{ConfigBasicMenuItem, ConfigBasicMenuItemSwitchMethods}, BasicMenuResult};
-use crate::interface::{get_current_language, set_language, reflect_language_setting, reload_messages};
+use unity::system::List;
+use engage::menu::{config::{ConfigBasicMenuItem, ConfigBasicMenuItemSwitchMethods}, BasicMenuResult, BasicMenu, BasicMenuItem};
+use crate::interface::{get_current_language, set_language, reflect_language_setting, reload_messages, rebuild_instant};
 
 pub static mut PREVIEW_LANG: i32 = 1;
 pub static mut CURRENT_LANG: i32 = 1;
