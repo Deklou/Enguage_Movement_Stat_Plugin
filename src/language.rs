@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 use unity::prelude::*;
-use unity::system::List;
-use engage::menu::{config::{ConfigBasicMenuItem, ConfigBasicMenuItemSwitchMethods}, BasicMenuResult, BasicMenu, BasicMenuItem};
-use crate::interface::{get_current_language, set_language, reflect_language_setting, reload_messages, rebuild_instant};
+use std::cell::RefCell;
+use engage::menu::{config::{ConfigBasicMenuItem, ConfigBasicMenuItemSwitchMethods}, BasicMenuResult};
+use engage::dialog::yesno::{BasicDialogItemYes, YesNoDialog, TwoChoiceDialogMethods};
+use crate::interface::{get_current_language, set_language, reflect_language_setting, reload_messages};
 
 pub static mut PREVIEW_LANG: i32 = 1;
 pub static mut CURRENT_LANG: i32 = 1;
@@ -120,20 +121,49 @@ impl ConfigBasicMenuItemSwitchMethods for LanguageSettings {
     }
 }
 
-
 //confirm the language change when the A button is pressed
 extern "C" fn a_button_confirm(this: &mut ConfigBasicMenuItem, _method_info: Option<&'static MethodInfo>) -> BasicMenuResult {
     unsafe {
+        CURRENT_MENU_ITEM.with(|item| {
+            *item.borrow_mut() = Some(this as *mut _);
+        });
         if PREVIEW_LANG != CURRENT_LANG {
+            BasicMenuResult::se_cursor();
+            YesNoDialog::bind::<LanguageConfirmation>(
+            this.menu,  
+            get_localized_string("change_language_confirm", CURRENT_LANG),
+            "Yes",
+            "No" 
+            );
+        }
+    BasicMenuResult::se_cursor()
+    }  
+}
+
+thread_local! {
+    static CURRENT_MENU_ITEM: RefCell<Option<*mut ConfigBasicMenuItem>> = RefCell::new(None);
+}
+
+struct LanguageConfirmation;
+
+impl TwoChoiceDialogMethods for LanguageConfirmation {
+    extern "C" fn on_first_choice(_this: &mut BasicDialogItemYes, _method_info: OptionalMethod) -> BasicMenuResult {
+        unsafe {
             set_language(PREVIEW_LANG);
             CURRENT_LANG = PREVIEW_LANG;
             reflect_language_setting();
             reload_messages();
-            update_texts(this);
+            CURRENT_MENU_ITEM.with(|item| {
+                if let Some(menu_item) = *item.borrow() {
+                    update_texts(&mut *menu_item); // Mise à jour des textes de l'interface utilisateur
+                }
+            });
         }
-        BasicMenuResult::se_cursor()
+        BasicMenuResult::new().with_close_this(true)
     }
+
 }
+
 
 //update the preview text based on the selected language
 fn update_preview_text(this: &mut ConfigBasicMenuItem) {
