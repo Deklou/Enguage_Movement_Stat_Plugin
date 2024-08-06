@@ -1,1 +1,1 @@
-Cobalt plugin for FE Engage that allows you to change the language and voices during game.
+Cobalt plugin for FE Engage that allows you to retrieve the current movement stat of a unit.
