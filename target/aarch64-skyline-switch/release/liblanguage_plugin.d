@@ -1,1 +1,1 @@
-C:\Jeux\Fire_Emblem_Engage\Modding\plugins\test\target\aarch64-skyline-switch\release\liblanguage_plugin.so: C:\Jeux\Fire_Emblem_Engage\Modding\plugins\test\src\interface.rs C:\Jeux\Fire_Emblem_Engage\Modding\plugins\test\src\language.rs C:\Jeux\Fire_Emblem_Engage\Modding\plugins\test\src\lib.rs C:\Jeux\Fire_Emblem_Engage\Modding\plugins\test\src\voice.rs
+C:\Jeux\Fire_Emblem_Engage\Modding\plugins\movement\target\aarch64-skyline-switch\release\liblanguage_plugin.so: C:\Jeux\Fire_Emblem_Engage\Modding\plugins\movement\src\lib.rs
